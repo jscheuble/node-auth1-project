@@ -26,6 +26,7 @@ router.post("/login", (req, res) => {
   Users.getBy(req.body.username)
     .then((user) => {
       if (user && bcrypt.compareSync(req.body.password, user[0].password)) {
+        req.session.loggedIn = true;
         res.status(200).json({ message: `welcome ${req.body.username}` });
       } else {
         res.status(401).json({ error: "unable to authenticate " });

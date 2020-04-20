@@ -4,6 +4,7 @@ const session = require("express-session");
 
 const userRouter = require("../users/users-router");
 const authRouter = require("../auth/authRouter");
+const authenticator = require("../auth/authenticator");
 
 const server = express();
 
@@ -27,7 +28,7 @@ server.get("/", (req, res) => {
   res.status(200).json({ message: "api running" });
 });
 
-server.use("/api/users", userRouter);
+server.use("/api/users", authenticator, userRouter);
 server.use("/api/auth", authRouter);
 
 module.exports = server;

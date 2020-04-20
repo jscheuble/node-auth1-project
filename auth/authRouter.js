@@ -26,16 +26,25 @@ router.post("/login", (req, res) => {
   Users.getBy(req.body.username)
     .then((user) => {
       if (user && bcrypt.compareSync(req.body.password, user[0].password)) {
-        req.session.loggedIn = true;
-        res.status(200).json({ message: `welcome ${req.body.username}` });
+        req.session.username = req.body.username;
+        res.status(200).json({ message: `welcome ${req.session.username}` });
       } else {
-        res.status(401).json({ error: "unable to authenticate " });
+        res.status(401).json({ error: "unable to authenticate" });
       }
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({ error: err });
     });
+});
+
+router.get("/logout", (req, res) => {
+  if (req.session && req.session.username) {
+    req.session.destroy();
+    res.status(200).json({ message: "bye" });
+  } else {
+    res.status(200).json({ message: "you're already logged out" });
+  }
 });
 
 module.exports = router;

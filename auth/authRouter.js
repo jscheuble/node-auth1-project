@@ -22,4 +22,19 @@ router.post("/register", (req, res) => {
     });
 });
 
+router.post("/login", (req, res) => {
+  Users.getBy(req.body.username)
+    .then((user) => {
+      if (user && bcrypt.compareSync(req.body.password, user[0].password)) {
+        res.status(200).json({ message: `welcome ${req.body.username}` });
+      } else {
+        res.status(401).json({ error: "unable to authenticate " });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
+});
+
 module.exports = router;
